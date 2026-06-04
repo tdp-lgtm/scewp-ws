@@ -1,0 +1,76 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageHero from "../../../components/PageHero.astro";
+import ProjectCard from "../../../components/ProjectCard.astro";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.start_year - a.data.start_year,
+);
+
+const tabs = [
+  { value: "", label: "All" },
+  { value: "current", label: "Current" },
+  { value: "completed", label: "Completed" },
+];
+---
+
+<BaseLayout
+  title="Research Projects"
+  description="Current and completed research projects at the Stockholm Centre for the Ethics of War and Peace."
+>
+  <PageHero
+    title="Research Projects"
+    subtitle="Current and completed programmes"
+    breadcrumb={[
+      { label: "Home", href: "/" },
+      { label: "Research", href: "/research" },
+      { label: "Projects" },
+    ]}
+  />
+
+  <div class="container-page py-16">
+    <div
+      role="tablist"
+      aria-label="Filter projects by status"
+      class="mb-8 flex flex-wrap gap-2 border-b border-border"
+    >
+      {
+        tabs.map((tab, i) => (
+          <button
+            role="tab"
+            data-project-tab={tab.value}
+            aria-selected={i === 0 ? "true" : "false"}
+            class="project-tab -mb-px border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted aria-selected:border-accent aria-selected:text-accent"
+          >
+            {tab.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div id="projects-grid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {projects.map((entry) => <ProjectCard entry={entry} />)}
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".project-tab");
+  const cards = document.querySelectorAll<HTMLElement>("#projects-grid > *");
+
+  function applyFilter(status: string) {
+    cards.forEach((card) => {
+      card.style.display =
+        !status || card.dataset.status === status ? "" : "none";
+    });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      tab.setAttribute("aria-selected", "true");
+      applyFilter(tab.dataset.projectTab || "");
+    });
+  });
+</script>

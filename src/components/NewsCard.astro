@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate, excerpt } from "../lib/utils";
+import ExternalLinkIcon from "./ExternalLinkIcon.astro";
+
+interface Props {
+  entry: CollectionEntry<"news">;
+}
+
+const { entry } = Astro.props;
+const n = entry.data;
+const isExternal = Boolean(n.external_url);
+const href = isExternal ? n.external_url! : `/news/${entry.slug}`;
+
+const categoryColours: Record<string, string> = {
+  News: "bg-primary/10 text-primary",
+  Announcement: "bg-secondary/20 text-primary",
+  Press: "bg-accent/10 text-accent",
+  Blog: "bg-black/5 text-muted",
+  Other: "bg-black/5 text-muted",
+};
+---
+
+<article
+  data-search={`${n.title} ${n.summary} ${n.category}`}
+  class="flex flex-col rounded-lg border border-border bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover"
+>
+  <div class="flex items-center gap-3 text-xs">
+    <span
+      class:list={[
+        "rounded-full px-2.5 py-0.5 font-medium",
+        categoryColours[n.category] || "bg-black/5 text-muted",
+      ]}>{n.category}</span
+    >
+    <time class="text-muted" datetime={n.date.toISOString()}
+      >{formatDate(n.date)}</time
+    >
+  </div>
+
+  <h3 class="mt-3 text-lg leading-snug">
+    <a
+      href={href}
+      class="inline-flex items-start gap-1 no-underline hover:text-accent"
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+    >
+      {n.title}
+      {isExternal && <ExternalLinkIcon class="mt-1 h-3.5 w-3.5 shrink-0" />}
+    </a>
+  </h3>
+
+  <p class="mt-2 flex-1 text-sm leading-relaxed text-text/80">
+    {excerpt(n.summary, 160)}
+  </p>
+
+  <a
+    href={href}
+    target={isExternal ? "_blank" : undefined}
+    rel={isExternal ? "noopener noreferrer" : undefined}
+    class="mt-4 text-sm font-semibold text-accent no-underline hover:underline"
+  >
+    {isExternal ? "Read article →" : "Read more →"}
+  </a>
+</article>

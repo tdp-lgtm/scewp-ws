@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import ExternalLinkIcon from "../components/ExternalLinkIcon.astro";
+---
+
+<BaseLayout
+  title="Public Engagement"
+  description="How the Stockholm Centre for the Ethics of War and Peace engages with the public, policymakers, and the wider world."
+>
+  <PageHero
+    title="Public Engagement"
+    subtitle="Bringing philosophy to bear on real-world conflict"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "Engagement" }]}
+  />
+
+  <div class="container-page py-16">
+    <div class="prose-academic">
+      <p class="text-xl leading-relaxed text-text">
+        The ethics of war is not an abstract concern. The questions we study bear
+        directly on decisions made by governments, militaries, humanitarian
+        organisations, and citizens. The Centre is committed to sharing its
+        research beyond the academy.
+      </p>
+
+      <h2>Conversations on War</h2>
+      <p>
+        Our flagship public series brings leading philosophers and practitioners
+        together for accessible discussions of pressing ethical questions raised
+        by contemporary conflict. Events are free and open to all, both in person
+        and online. See our
+        <a href="/events">events page</a> for upcoming and past sessions.
+      </p>
+
+      <h2>Writing for a wider audience</h2>
+      <p>
+        Members of the Centre contribute to public debate through op-eds,
+        interviews, and accessible writing. Much of this work appears on the
+        Public Ethics blog, an outlet dedicated to bringing philosophical
+        thinking to bear on issues of public concern.
+      </p>
+    </div>
+
+    <div class="mt-10 rounded-lg border border-border bg-white p-8">
+      <h3 class="text-2xl">Public Ethics blog</h3>
+      <p class="mt-2 text-muted">
+        Centre members regularly write for the Public Ethics blog, which makes
+        philosophical research on war, peace, and other ethical questions
+        accessible to a general readership.
+      </p>
+      <a
+        href="https://www.publicethics.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-ghost mt-5 inline-flex items-center gap-2"
+      >
+        Visit publicethics.org <ExternalLinkIcon class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</BaseLayout>

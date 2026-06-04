@@ -1,0 +1,29 @@
+---
+interface Props {
+  label: string;
+  variant?: "default" | "accent" | "gold" | "navy" | "muted";
+  href?: string;
+}
+
+const { label, variant = "default", href } = Astro.props;
+
+const variants: Record<string, string> = {
+  default: "bg-surface text-text border border-border",
+  accent: "bg-accent/10 text-accent border border-accent/20",
+  gold: "bg-secondary/20 text-primary border border-secondary/40",
+  navy: "bg-primary text-white border border-primary",
+  muted: "bg-black/5 text-muted border border-transparent",
+};
+
+const cls = `inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium no-underline ${variants[variant]}`;
+---
+
+{
+  href ? (
+    <a href={href} class={cls}>
+      {label}
+    </a>
+  ) : (
+    <span class={cls}>{label}</span>
+  )
+}

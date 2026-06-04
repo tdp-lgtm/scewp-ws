@@ -1,0 +1,95 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { excerpt } from "../lib/utils";
+
+interface Props {
+  entry: CollectionEntry<"people">;
+}
+
+const { entry } = Astro.props;
+const p = entry.data;
+
+const statusLabel: Record<string, string> = {
+  current: "Current",
+  affiliate: "Affiliate",
+  alumni: "Alumni",
+};
+const statusVariant: Record<string, string> = {
+  current: "bg-secondary/20 text-primary",
+  affiliate: "bg-primary/10 text-primary",
+  alumni: "bg-black/5 text-muted",
+};
+---
+
+<article
+  data-status={p.status}
+  data-search={`${p.name} ${p.role} ${(p.research_interests || []).join(" ")}`}
+  class="flex flex-col rounded-lg border border-border bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover"
+>
+  <div class="flex items-start gap-4">
+    {
+      p.photo ? (
+        <img
+          src={p.photo}
+          alt={`Portrait of ${p.name}`}
+          loading="lazy"
+          class="h-16 w-16 shrink-0 rounded-full object-cover"
+        />
+      ) : (
+        <div
+          class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/10 font-heading text-xl text-primary"
+          aria-hidden="true"
+        >
+          {p.name.charAt(0)}
+        </div>
+      )
+    }
+    <div class="min-w-0">
+      <h3 class="text-lg leading-tight">
+        <a href={`/people/${entry.slug}`} class="no-underline hover:text-accent"
+          >{p.name}</a
+        >
+      </h3>
+      <p class="text-sm text-muted">{p.role}</p>
+      <span
+        class:list={[
+          "mt-1.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium",
+          statusVariant[p.status],
+        ]}>{statusLabel[p.status]}</span
+      >
+    </div>
+  </div>
+
+  <p class="mt-4 flex-1 text-sm leading-relaxed text-text/80">
+    {excerpt(p.bio, 150)}
+  </p>
+
+  <div class="mt-4 flex items-center gap-4 text-sm">
+    <a
+      href={`/people/${entry.slug}`}
+      class="font-medium text-accent no-underline hover:underline">Profile</a
+    >
+    {
+      p.email && (
+        <a
+          href={`mailto:${p.email}`}
+          class="text-muted no-underline hover:text-accent"
+        >
+          Email
+        </a>
+      )
+    }
+    {
+      p.website && (
+        <a
+          href={p.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-muted no-underline hover:text-accent"
+        >
+          Website
+        </a>
+      )
+    }
+  </div>
+</article>

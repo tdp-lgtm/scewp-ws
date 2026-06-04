@@ -1,0 +1,91 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import PersonCard from "../../components/PersonCard.astro";
+
+const people = (await getCollection("people")).sort(
+  (a, b) => a.data.display_order - b.data.display_order,
+);
+
+const tabs = [
+  { value: "current", label: "Current Members" },
+  { value: "affiliate", label: "Affiliates" },
+  { value: "alumni", label: "Alumni" },
+];
+
+const countByStatus = (status: string) =>
+  people.filter((p) => p.data.status === status).length;
+---
+
+<BaseLayout
+  title="People"
+  description="Members, affiliates, and alumni of the Stockholm Centre for the Ethics of War and Peace."
+>
+  <PageHero
+    title="People"
+    subtitle="The researchers behind the Centre"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "People" }]}
+  />
+
+  <div class="container-page py-16">
+    {/* Status tabs */}
+    <div
+      role="tablist"
+      aria-label="Filter people by status"
+      class="mb-8 flex flex-wrap gap-2 border-b border-border"
+    >
+      {
+        tabs.map((tab, i) => (
+          <button
+            role="tab"
+            data-tab={tab.value}
+            aria-selected={i === 0 ? "true" : "false"}
+            class="people-tab -mb-px border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted aria-selected:border-accent aria-selected:text-accent"
+          >
+            {tab.label}{" "}
+            <span class="text-xs opacity-70">({countByStatus(tab.value)})</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div
+      id="people-grid"
+      class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {people.map((entry) => <PersonCard entry={entry} />)}
+    </div>
+
+    <p id="people-empty" class="hidden py-12 text-center text-muted">
+      No people in this category yet.
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".people-tab");
+  const cards = document.querySelectorAll<HTMLElement>("#people-grid > *");
+  const empty = document.getElementById("people-empty");
+
+  function applyFilter(status: string) {
+    let visible = 0;
+    cards.forEach((card) => {
+      const show = card.dataset.status === status;
+      card.style.display = show ? "" : "none";
+      if (show) visible++;
+    });
+    empty?.classList.toggle("hidden", visible > 0);
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      tab.setAttribute("aria-selected", "true");
+      applyFilter(tab.dataset.tab!);
+    });
+  });
+
+  // Default to first tab (current).
+  applyFilter("current");
+</script>

@@ -1,0 +1,116 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { dateParts } from "../lib/utils";
+
+interface Props {
+  entry: CollectionEntry<"events">;
+  past?: boolean;
+}
+
+const { entry, past = false } = Astro.props;
+const e = entry.data;
+const d = dateParts(e.start_date);
+
+// Colour-code the type badge.
+const typeColours: Record<string, string> = {
+  Talk: "bg-primary/10 text-primary",
+  Workshop: "bg-secondary/20 text-primary",
+  Conference: "bg-accent/10 text-accent",
+  "Public Lecture": "bg-primary/10 text-primary",
+  "Reading Group": "bg-black/5 text-muted",
+  "Conversations on War": "bg-accent/15 text-accent",
+  Other: "bg-black/5 text-muted",
+};
+---
+
+<article
+  data-type={e.event_type}
+  data-date={e.start_date.toISOString()}
+  data-search={`${e.title} ${(e.speakers || []).join(" ")} ${e.event_type}`}
+  class:list={[
+    "flex gap-5 rounded-lg border border-border bg-white p-5 shadow-card transition-shadow hover:shadow-card-hover",
+    past && "opacity-90",
+  ]}
+>
+  {/* Date block */}
+  <div
+    class:list={[
+      "flex h-20 w-16 shrink-0 flex-col items-center justify-center rounded-md text-center",
+      past ? "bg-surface text-muted" : "bg-primary text-white",
+    ]}
+  >
+    <span class="font-heading text-2xl font-bold leading-none">{d.day}</span>
+    <span class="text-xs uppercase tracking-wide">{d.month}</span>
+    <span class="text-[0.65rem] opacity-70">{d.year}</span>
+  </div>
+
+  <div class="min-w-0 flex-1">
+    <div class="flex flex-wrap items-center gap-2">
+      <span
+        class:list={[
+          "rounded-full px-2.5 py-0.5 text-xs font-medium",
+          typeColours[e.event_type] || "bg-black/5 text-muted",
+        ]}>{e.event_type}</span
+      >
+      {
+        e.online && (
+          <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+            Online
+          </span>
+        )
+      }
+    </div>
+
+    <h3 class="mt-2 text-lg leading-snug">
+      <a href={`/events/${entry.slug}`} class="no-underline hover:text-accent"
+        >{e.title}</a
+      >
+    </h3>
+
+    <p class="mt-1 text-sm text-muted">
+      {e.time && <span>{e.time}</span>}
+      {e.time && e.location && <span> · </span>}
+      {e.location && <span>{e.location}</span>}
+    </p>
+
+    {
+      e.speakers && e.speakers.length > 0 && (
+        <p class="mt-1 text-sm text-text/80">{e.speakers.join(", ")}</p>
+      )
+    }
+
+    <div class="mt-3 flex flex-wrap gap-4 text-sm">
+      {
+        !past && e.registration_url ? (
+          <a
+            href={e.registration_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-semibold text-accent no-underline hover:underline"
+          >
+            Register →
+          </a>
+        ) : (
+          <a
+            href={`/events/${entry.slug}`}
+            class="font-semibold text-accent no-underline hover:underline"
+          >
+            Learn more →
+          </a>
+        )
+      }
+      {
+        past && e.recording_url && (
+          <a
+            href={e.recording_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-muted no-underline hover:text-accent"
+          >
+            Watch recording
+          </a>
+        )
+      }
+    </div>
+  </div>
+</article>

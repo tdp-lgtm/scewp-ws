@@ -1,0 +1,160 @@
+/* Google Fonts — Playfair Display (headings) + Inter (body) */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    scroll-behavior: smooth;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-surface font-body text-text antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading text-primary;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  h1 {
+    @apply text-4xl font-black md:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl font-bold md:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl font-bold;
+  }
+
+  h4 {
+    @apply text-xl font-bold;
+  }
+
+  a {
+    @apply text-primary underline-offset-2 transition-colors;
+  }
+
+  a:hover {
+    @apply text-accent;
+  }
+
+  /* Accessible, visible focus styles */
+  :focus-visible {
+    outline: 3px solid theme("colors.secondary");
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Respect reduced-motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Long-form editorial content (About, news bodies, project descriptions) */
+  .prose-academic {
+    @apply max-w-prose text-text;
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+
+  .prose-academic > * + * {
+    margin-top: 1.5em;
+  }
+
+  .prose-academic h2 {
+    @apply mt-12 mb-2 text-3xl;
+  }
+
+  .prose-academic h3 {
+    @apply mt-10 mb-2 text-2xl;
+  }
+
+  .prose-academic p {
+    @apply leading-relaxed;
+  }
+
+  .prose-academic a {
+    @apply text-accent underline decoration-secondary/60 decoration-2 underline-offset-4;
+  }
+
+  .prose-academic ul {
+    @apply list-disc space-y-2 pl-6;
+  }
+
+  .prose-academic ol {
+    @apply list-decimal space-y-2 pl-6;
+  }
+
+  .prose-academic blockquote {
+    @apply border-l-4 border-secondary pl-6 italic text-muted;
+  }
+
+  .prose-academic img {
+    @apply my-8 rounded-md;
+  }
+
+  .prose-academic hr {
+    @apply my-12 border-border;
+  }
+
+  /* Skip-to-content link for keyboard users */
+  .skip-link {
+    @apply absolute left-4 z-[100] -translate-y-20 rounded-md bg-primary px-4 py-2 text-white transition-transform focus:translate-y-4;
+  }
+
+  /* Reusable button styles */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold no-underline transition-all;
+  }
+
+  .btn-primary {
+    @apply bg-secondary text-primary hover:bg-secondary/90 hover:text-primary;
+  }
+
+  .btn-outline {
+    @apply border border-white/40 text-white hover:border-white hover:bg-white/10 hover:text-white;
+  }
+
+  .btn-ghost {
+    @apply border border-border bg-white text-primary hover:border-primary hover:text-primary;
+  }
+
+  /* Small uppercase label / kicker */
+  .kicker {
+    @apply font-body text-xs font-semibold uppercase tracking-kicker text-accent;
+  }
+
+  /* Content container */
+  .container-page {
+    @apply mx-auto w-full max-w-container px-5 sm:px-8;
+  }
+}

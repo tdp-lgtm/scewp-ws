@@ -1,0 +1,454 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Save drafts and submit for review before publishing.
+publish_mode: editorial_workflow
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+site_url: https://stockholmcentre.org
+display_url: https://stockholmcentre.org
+logo_url: https://stockholmcentre.org/favicon.svg
+
+collections:
+  # ─────────────────────────────────────────────
+  # PEOPLE
+  # ─────────────────────────────────────────────
+  - name: people
+    label: People
+    label_singular: Person
+    folder: src/content/people
+    create: true
+    slug: "{{slug}}"
+    summary: "{{name}} — {{role}}"
+    fields:
+      - { label: Name, name: name, widget: string }
+      - {
+          label: Role,
+          name: role,
+          widget: string,
+          hint: 'e.g. Director, Postdoctoral Researcher, PhD Candidate',
+        }
+      - label: Status
+        name: status
+        widget: select
+        default: current
+        options:
+          - { label: Current Member, value: current }
+          - { label: Affiliate, value: affiliate }
+          - { label: Alumni, value: alumni }
+      - {
+          label: Photo,
+          name: photo,
+          widget: image,
+          required: false,
+          hint: 'A square headshot works best.',
+        }
+      - {
+          label: Short bio,
+          name: bio,
+          widget: text,
+          hint: 'Two or three sentences shown on cards and the profile header.',
+        }
+      - label: Research interests
+        name: research_interests
+        widget: list
+        required: false
+        field: { label: Interest, name: interest, widget: string }
+        hint: 'e.g. Self-defence, Just War Theory, Punishment'
+      - {
+          label: Website,
+          name: website,
+          widget: string,
+          required: false,
+          hint: 'Full URL including https://',
+        }
+      - { label: Email, name: email, widget: string, required: false }
+      - {
+          label: Publications link,
+          name: publications_link,
+          widget: string,
+          required: false,
+          hint: 'e.g. a PhilPapers profile URL (include https://)',
+        }
+      - {
+          label: Display order,
+          name: display_order,
+          widget: number,
+          default: 99,
+          value_type: int,
+          hint: 'Lower numbers appear first. Leave at 99 if unsure.',
+        }
+      - {
+          label: Extended bio (optional),
+          name: body,
+          widget: markdown,
+          required: false,
+          hint: 'Longer biography shown on the individual profile page.',
+        }
+
+  # ─────────────────────────────────────────────
+  # PUBLICATIONS
+  # ─────────────────────────────────────────────
+  - name: publications
+    label: Publications
+    label_singular: Publication
+    folder: src/content/publications
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} ({{year}})"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - label: Authors
+        name: authors
+        widget: list
+        field: { label: Author, name: author, widget: string }
+        hint: "Add one author per line in 'Last, Firstname' format"
+      - { label: Year, name: year, widget: number, value_type: int }
+      - label: Publication type
+        name: publication_type
+        widget: select
+        options:
+          - Journal Article
+          - Book
+          - Book Chapter
+          - Working Paper
+          - Report
+          - Edited Volume
+      - {
+          label: Journal or publisher,
+          name: journal_or_publisher,
+          widget: string,
+          required: false,
+        }
+      - {
+          label: Volume,
+          name: volume,
+          widget: string,
+          required: false,
+          hint: 'e.g. 40(2)',
+        }
+      - {
+          label: Pages,
+          name: pages,
+          widget: string,
+          required: false,
+          hint: 'e.g. 112–134',
+        }
+      - {
+          label: DOI,
+          name: doi,
+          widget: string,
+          required: false,
+          hint: 'Just the DOI, e.g. 10.1111/japp.12345',
+        }
+      - {
+          label: Open access URL,
+          name: open_access_url,
+          widget: string,
+          required: false,
+          hint: 'Full URL to a freely available version (include https://)',
+        }
+      - {
+          label: PDF file,
+          name: pdf_file,
+          widget: file,
+          required: false,
+          hint: 'Upload a PDF to host it on the site.',
+        }
+      - { label: Abstract, name: abstract, widget: text, required: false }
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        field: { label: Tag, name: tag, widget: string }
+        hint: 'Topic keywords, e.g. self-defence, just war, terrorism'
+      - {
+          label: Featured on homepage,
+          name: featured,
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+      - {
+          label: Notes (optional),
+          name: body,
+          widget: markdown,
+          required: false,
+          hint: 'Optional longer description shown on the publication page.',
+        }
+
+  # ─────────────────────────────────────────────
+  # EVENTS
+  # ─────────────────────────────────────────────
+  - name: events
+    label: Events
+    label_singular: Event
+    folder: src/content/events
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{start_date}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - label: Event type
+        name: event_type
+        widget: select
+        options:
+          - Talk
+          - Workshop
+          - Conference
+          - Public Lecture
+          - Reading Group
+          - Conversations on War
+          - Other
+      - { label: Start date, name: start_date, widget: date }
+      - {
+          label: End date,
+          name: end_date,
+          widget: date,
+          required: false,
+          hint: 'Only for multi-day events.',
+        }
+      - {
+          label: Time,
+          name: time,
+          widget: string,
+          required: false,
+          hint: 'e.g. 14:00–16:00 CET',
+        }
+      - { label: Location, name: location, widget: string, required: false }
+      - {
+          label: Online,
+          name: online,
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+      - {
+          label: Online link,
+          name: online_link,
+          widget: string,
+          required: false,
+          hint: 'Zoom / stream URL (include https://)',
+        }
+      - label: Speakers
+        name: speakers
+        widget: list
+        required: false
+        field: { label: Speaker, name: speaker, widget: string }
+      - {
+          label: Registration URL,
+          name: registration_url,
+          widget: string,
+          required: false,
+        }
+      - { label: Image, name: image, widget: image, required: false }
+      - {
+          label: Recording URL,
+          name: recording_url,
+          widget: string,
+          required: false,
+          hint: 'For past events with a recording.',
+        }
+      # The site computes upcoming/past from the date automatically; this field
+      # lets you override that status manually if needed.
+      - label: Status override
+        name: status
+        widget: select
+        required: false
+        default: upcoming
+        hint: 'The site normally decides upcoming/past from the date. Set this only to override (e.g. to keep an event in a particular section).'
+        options:
+          - { label: Upcoming, value: upcoming }
+          - { label: Past, value: past }
+      - label: Description
+        name: body
+        widget: markdown
+        required: false
+        hint: 'Full event description shown on the event page.'
+
+  # ─────────────────────────────────────────────
+  # JOURNAL SYMPOSIA
+  # ─────────────────────────────────────────────
+  - name: symposia
+    label: Journal Symposia
+    label_singular: Symposium
+    folder: src/content/symposia
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} ({{journal}}, {{year}})"
+    fields:
+      - {
+          label: Title,
+          name: title,
+          widget: string,
+          hint: "e.g. Symposium on Helen Frowe's Defensive Killing",
+        }
+      - {
+          label: Journal,
+          name: journal,
+          widget: string,
+          hint: 'e.g. Ethics, Journal of Applied Philosophy',
+        }
+      - { label: Year, name: year, widget: number, value_type: int }
+      - {
+          label: Subject description,
+          name: subject_description,
+          widget: text,
+          hint: 'A short description of what the symposium is about.',
+        }
+      - {
+          label: Book title,
+          name: book_title,
+          widget: string,
+          required: false,
+          hint: 'The book being discussed, if applicable.',
+        }
+      - {
+          label: Book author,
+          name: book_author,
+          widget: string,
+          required: false,
+        }
+      - label: Contributors
+        name: contributors
+        widget: list
+        required: false
+        field: { label: Contributor, name: contributor, widget: string }
+        hint: 'The essay authors in the symposium — these need not be SCEWP staff.'
+      - {
+          label: Journal URL,
+          name: journal_url,
+          widget: string,
+          required: false,
+          hint: 'Link to the journal issue (include https://)',
+        }
+      - {
+          label: Cover image,
+          name: cover_image,
+          widget: image,
+          required: false,
+        }
+      - {
+          label: Display order,
+          name: display_order,
+          widget: number,
+          default: 99,
+          value_type: int,
+          hint: 'Lower numbers appear first.',
+        }
+      - {
+          label: Editorial introduction (optional),
+          name: body,
+          widget: markdown,
+          required: false,
+          hint: 'A longer description or editorial intro shown on the symposium page.',
+        }
+
+  # ─────────────────────────────────────────────
+  # NEWS
+  # ─────────────────────────────────────────────
+  - name: news
+    label: News
+    label_singular: News item
+    folder: src/content/news
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: date }
+      - label: Category
+        name: category
+        widget: select
+        default: News
+        options:
+          - News
+          - Announcement
+          - Press
+          - Blog
+          - Other
+      - {
+          label: Summary,
+          name: summary,
+          widget: text,
+          hint: 'Short text shown in listings and at the top of the article.',
+        }
+      - { label: Image, name: image, widget: image, required: false }
+      - {
+          label: External URL,
+          name: external_url,
+          widget: string,
+          required: false,
+          hint: 'If this news item links to an external article, paste the URL here and leave the body empty.',
+        }
+      - {
+          label: Featured on homepage,
+          name: featured,
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+      - {
+          label: Body,
+          name: body,
+          widget: markdown,
+          required: false,
+          hint: 'Full article content. Leave empty if you are linking out via External URL.',
+        }
+
+  # ─────────────────────────────────────────────
+  # PROJECTS
+  # ─────────────────────────────────────────────
+  - name: projects
+    label: Research Projects
+    label_singular: Project
+    folder: src/content/projects
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} ({{start_year}})"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - label: Status
+        name: status
+        widget: select
+        default: current
+        options:
+          - { label: Current, value: current }
+          - { label: Completed, value: completed }
+      - { label: Start year, name: start_year, widget: number, value_type: int }
+      - {
+          label: End year,
+          name: end_year,
+          widget: number,
+          required: false,
+          value_type: int,
+        }
+      - {
+          label: Lead researcher,
+          name: lead_researcher,
+          widget: string,
+          required: false,
+        }
+      - label: Collaborators
+        name: collaborators
+        widget: list
+        required: false
+        field: { label: Collaborator, name: collaborator, widget: string }
+      - { label: Funder, name: funder, widget: string, required: false }
+      - {
+          label: Website URL,
+          name: website_url,
+          widget: string,
+          required: false,
+        }
+      - { label: Image, name: image, widget: image, required: false }
+      - {
+          label: Description,
+          name: body,
+          widget: markdown,
+          required: false,
+          hint: 'Full project description shown on the project page.',
+        }

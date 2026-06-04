@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageHero from "../../../components/PageHero.astro";
+import NewsCard from "../../../components/NewsCard.astro";
+import Pagination from "../../../components/Pagination.astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const all = (await getCollection("news")).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  );
+  // Page 1 lives at /news (index.astro); only emit pages 2+.
+  return paginate(all, { pageSize: 10 }).filter(
+    (p) => String(p.params.page) !== "1",
+  );
+}) satisfies GetStaticPaths;
+
+interface Props {
+  page: Page<CollectionEntry<"news">>;
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout
+  title="News"
+  description="News and announcements from the Stockholm Centre for the Ethics of War and Peace."
+>
+  <PageHero
+    title="News"
+    subtitle="Announcements, press, and updates"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "News" }]}
+  />
+
+  <div class="container-page py-16">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {page.data.map((entry) => <NewsCard entry={entry} />)}
+    </div>
+    <Pagination
+      currentPage={page.currentPage}
+      totalPages={page.lastPage}
+      baseUrl="/news"
+    />
+  </div>
+</BaseLayout>

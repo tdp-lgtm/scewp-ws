@@ -1,0 +1,40 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Pretty URL for the Decap CMS admin.
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+# Catch-all 404.
+[[redirects]]
+  from = "/*"
+  to = "/404"
+  status = 404
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+# NOTE: The sitemap is generated at build time by the @astrojs/sitemap
+# integration (see astro.config.mjs), so the @netlify/plugin-sitemap build
+# plugin is intentionally NOT enabled here to avoid producing two competing
+# sitemaps. To use the Netlify plugin instead, remove the sitemap() integration
+# and uncomment the block below:
+#
+# [[plugins]]
+#   package = "@netlify/plugin-sitemap"

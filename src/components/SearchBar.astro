@@ -1,0 +1,55 @@
+---
+interface Props {
+  /** A selector matching the items to filter. */
+  target: string;
+  placeholder?: string;
+  /** The data attribute on each item holding searchable text. */
+  searchAttr?: string;
+}
+
+const {
+  target,
+  placeholder = "Search…",
+  searchAttr = "data-search",
+} = Astro.props;
+const id = `search-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class="relative">
+  <svg
+    class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+  <input
+    type="search"
+    id={id}
+    data-search-target={target}
+    data-search-attr={searchAttr}
+    placeholder={placeholder}
+    class="w-full rounded-md border border-border bg-white py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+    aria-label={placeholder}
+  />
+</div>
+
+<script>
+  document
+    .querySelectorAll<HTMLInputElement>("input[data-search-target]")
+    .forEach((input) => {
+      const targetSel = input.dataset.searchTarget!;
+      const attr = input.dataset.searchAttr || "data-search";
+      input.addEventListener("input", () => {
+        const q = input.value.trim().toLowerCase();
+        document.querySelectorAll<HTMLElement>(targetSel).forEach((el) => {
+          const hay = (el.getAttribute(attr) || el.textContent || "").toLowerCase();
+          el.style.display = !q || hay.includes(q) ? "" : "none";
+        });
+      });
+    });
+</script>

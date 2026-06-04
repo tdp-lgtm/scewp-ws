@@ -1,0 +1,179 @@
+---
+const nav = [
+  { label: "About", href: "/about" },
+  { label: "People", href: "/people" },
+  {
+    label: "Research",
+    href: "/research",
+    children: [
+      { label: "Current Projects", href: "/research/projects" },
+      { label: "Publications", href: "/research/publications" },
+    ],
+  },
+  { label: "Symposia", href: "/symposia" },
+  {
+    label: "Events",
+    href: "/events",
+    children: [
+      { label: "Upcoming", href: "/events#upcoming" },
+      { label: "Archive", href: "/events#past" },
+      { label: "Conversations on War", href: "/events?type=Conversations+on+War" },
+    ],
+  },
+  { label: "News", href: "/news" },
+  { label: "Engagement", href: "/engagement" },
+  { label: "Contact", href: "/contact" },
+];
+---
+
+<header id="site-header" class="sticky top-0 z-50 transition-all duration-300">
+  {/* Thin top affiliation bar */}
+  <div class="bg-primary text-white/80">
+    <div class="container-page flex items-center justify-between py-1.5 text-xs">
+      <span>Department of Philosophy, Stockholm University</span>
+      <a
+        href="https://twitter.com/EthicsWarPeace"
+        class="hidden text-white/80 hover:text-secondary sm:inline"
+        target="_blank"
+        rel="noopener noreferrer">@EthicsWarPeace</a
+      >
+    </div>
+  </div>
+
+  {/* Main nav bar */}
+  <div
+    id="header-bar"
+    class="border-b border-border bg-surface/95 backdrop-blur transition-all"
+  >
+    <div class="container-page flex items-center justify-between gap-4 py-4">
+      <a href="/" class="group flex flex-col leading-tight no-underline">
+        <span class="font-heading text-lg font-bold text-primary md:text-xl"
+          >Stockholm Centre</span
+        >
+        <span class="text-[0.7rem] uppercase tracking-kicker text-muted"
+          >for the Ethics of War &amp; Peace</span
+        >
+      </a>
+
+      {/* Desktop nav */}
+      <nav aria-label="Primary" class="hidden lg:block">
+        <ul class="flex items-center gap-1">
+          {
+            nav.map((item) => (
+              <li class="group relative">
+                <a
+                  href={item.href}
+                  class="inline-flex items-center gap-1 rounded px-3 py-2 text-sm font-medium text-text no-underline hover:text-accent"
+                >
+                  {item.label}
+                  {item.children && (
+                    <svg
+                      class="h-3 w-3 opacity-60"
+                      viewBox="0 0 12 12"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M2 4l4 4 4-4"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      />
+                    </svg>
+                  )}
+                </a>
+                {item.children && (
+                  <ul class="invisible absolute left-0 top-full z-50 min-w-[14rem] rounded-md border border-border bg-white p-2 opacity-0 shadow-card transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          class="block rounded px-3 py-2 text-sm text-text no-underline hover:bg-surface hover:text-accent"
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      {/* Mobile hamburger */}
+      <button
+        id="menu-toggle"
+        class="inline-flex items-center justify-center rounded-md border border-border p-2 lg:hidden"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M4 6h16M4 12h16M4 18h16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+
+    {/* Mobile menu panel */}
+    <nav
+      id="mobile-menu"
+      aria-label="Mobile"
+      class="hidden border-t border-border bg-white lg:hidden"
+    >
+      <ul class="container-page flex flex-col py-2">
+        {
+          nav.map((item) => (
+            <li class="border-b border-border/60 last:border-0">
+              <a
+                href={item.href}
+                class="block py-3 text-base font-medium text-text no-underline"
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <ul class="pb-2 pl-4">
+                  {item.children.map((child) => (
+                    <li>
+                      <a
+                        href={child.href}
+                        class="block py-2 text-sm text-muted no-underline"
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  toggle?.addEventListener("click", () => {
+    const open = menu?.classList.toggle("hidden") === false;
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+
+  // Subtle elevation/opacity change on scroll.
+  const bar = document.getElementById("header-bar");
+  const onScroll = () => {
+    if (window.scrollY > 8) {
+      bar?.classList.add("shadow-card", "bg-surface/98");
+    } else {
+      bar?.classList.remove("shadow-card", "bg-surface/98");
+    }
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+</script>

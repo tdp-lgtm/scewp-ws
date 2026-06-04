@@ -1,0 +1,106 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageHero from "../../../components/PageHero.astro";
+import BackLink from "../../../components/BackLink.astro";
+import ExternalLinkIcon from "../../../components/ExternalLinkIcon.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const p = entry.data;
+const { Content } = await entry.render();
+const years = p.end_year
+  ? `${p.start_year}–${p.end_year}`
+  : `${p.start_year}–present`;
+---
+
+<BaseLayout title={p.title} description={`${p.title} — a research project (${years}).`}>
+  <PageHero
+    title={p.title}
+    subtitle={years}
+    breadcrumb={[
+      { label: "Home", href: "/" },
+      { label: "Research", href: "/research" },
+      { label: "Projects", href: "/research/projects" },
+      { label: p.title },
+    ]}
+  />
+
+  <div class="container-page py-16">
+    <BackLink href="/research/projects" label="Back to projects" />
+
+    <div class="mt-8 grid gap-12 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <span
+          class:list={[
+            "inline-block rounded-full px-3 py-1 text-xs font-medium",
+            p.status === "current"
+              ? "bg-secondary/20 text-primary"
+              : "bg-black/5 text-muted",
+          ]}>{p.status === "current" ? "Current project" : "Completed"}</span
+        >
+        <div class="prose-academic mt-6">
+          <Content />
+        </div>
+        {
+          p.website_url && (
+            <a
+              href={p.website_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-ghost mt-6 inline-flex items-center gap-2"
+            >
+              Project website <ExternalLinkIcon class="h-4 w-4" />
+            </a>
+          )
+        }
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div class="rounded-lg border border-border bg-white p-6 text-sm">
+          <dl class="space-y-4">
+            <div>
+              <dt class="font-semibold text-primary">Duration</dt>
+              <dd class="text-muted">{years}</dd>
+            </div>
+            {
+              p.lead_researcher && (
+                <div>
+                  <dt class="font-semibold text-primary">Lead researcher</dt>
+                  <dd class="text-muted">{p.lead_researcher}</dd>
+                </div>
+              )
+            }
+            {
+              p.collaborators && p.collaborators.length > 0 && (
+                <div>
+                  <dt class="font-semibold text-primary">Collaborators</dt>
+                  <dd class="text-muted">{p.collaborators.join(", ")}</dd>
+                </div>
+              )
+            }
+            {
+              p.funder && (
+                <div>
+                  <dt class="font-semibold text-primary">Funder</dt>
+                  <dd class="text-muted">{p.funder}</dd>
+                </div>
+              )
+            }
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

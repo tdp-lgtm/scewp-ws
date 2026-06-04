@@ -1,0 +1,145 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import EventCard from "../../components/EventCard.astro";
+import { isUpcoming } from "../../lib/utils";
+
+const events = await getCollection("events");
+
+// Build-time split; the client re-validates against the real "today".
+const upcoming = events
+  .filter((e) => isUpcoming(e.data.start_date))
+  .sort((a, b) => a.data.start_date.getTime() - b.data.start_date.getTime());
+
+const past = events
+  .filter((e) => !isUpcoming(e.data.start_date))
+  .sort((a, b) => b.data.start_date.getTime() - a.data.start_date.getTime());
+
+const types = [...new Set(events.map((e) => e.data.event_type))].sort();
+---
+
+<BaseLayout
+  title="Events"
+  description="Talks, workshops, conferences, and the Conversations on War series at the Stockholm Centre for the Ethics of War and Peace."
+>
+  <PageHero
+    title="Events"
+    subtitle="Talks, workshops, and Conversations on War"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "Events" }]}
+  />
+
+  <div class="container-page py-16">
+    {/* Type filter */}
+    <div class="mb-10 flex flex-wrap gap-2">
+      <button
+        data-event-type=""
+        aria-pressed="true"
+        class="event-type-tab rounded-full border border-border px-4 py-1.5 text-sm font-medium aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-white"
+        >All</button
+      >
+      {
+        types.map((t) => (
+          <button
+            data-event-type={t}
+            aria-pressed="false"
+            class="event-type-tab rounded-full border border-border px-4 py-1.5 text-sm font-medium aria-pressed:border-accent aria-pressed:bg-accent aria-pressed:text-white"
+          >
+            {t}
+          </button>
+        ))
+      }
+    </div>
+
+    {/* Upcoming */}
+    <section id="upcoming" class="scroll-mt-28">
+      <h2 class="text-3xl">Upcoming</h2>
+      <div id="upcoming-list" class="mt-6 grid gap-5 md:grid-cols-2">
+        {upcoming.map((entry) => <EventCard entry={entry} />)}
+      </div>
+      <p id="upcoming-empty" class:list={["py-8 text-muted", upcoming.length > 0 && "hidden"]}>
+        No upcoming events scheduled. Please check back soon.
+      </p>
+    </section>
+
+    {/* Past */}
+    <section id="past" class="mt-16 scroll-mt-28">
+      <h2 class="text-3xl">Past Events</h2>
+      <div id="past-list" class="mt-6 grid gap-5 md:grid-cols-2">
+        {past.map((entry) => <EventCard entry={entry} past={true} />)}
+      </div>
+      <p id="past-empty" class:list={["py-8 text-muted", past.length > 0 && "hidden"]}>
+        No past events to show.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  const upcomingList = document.getElementById("upcoming-list")!;
+  const pastList = document.getElementById("past-list")!;
+
+  // 1. Client-side re-validation of the upcoming/past split against real today.
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  function dateOf(el: Element): number {
+    return new Date((el as HTMLElement).dataset.date || "").getTime();
+  }
+
+  // Move any "upcoming" cards whose date has actually passed into Past.
+  [...upcomingList.children].forEach((card) => {
+    if (dateOf(card) < startOfToday.getTime()) {
+      pastList.prepend(card);
+    }
+  });
+
+  function sortChildren(container: HTMLElement, ascending: boolean) {
+    const cards = [...container.children] as HTMLElement[];
+    cards.sort((a, b) =>
+      ascending ? dateOf(a) - dateOf(b) : dateOf(b) - dateOf(a),
+    );
+    cards.forEach((c) => container.appendChild(c));
+  }
+  sortChildren(upcomingList, true);
+  sortChildren(pastList, false);
+
+  // 2. Type filtering across both sections.
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".event-type-tab");
+  const allCards = document.querySelectorAll<HTMLElement>(
+    "#upcoming-list > *, #past-list > *",
+  );
+  const upcomingEmpty = document.getElementById("upcoming-empty");
+  const pastEmpty = document.getElementById("past-empty");
+
+  function applyType(type: string) {
+    allCards.forEach((card) => {
+      card.style.display =
+        !type || card.dataset.type === type ? "" : "none";
+    });
+    const upVisible = [...upcomingList.children].some(
+      (c) => (c as HTMLElement).style.display !== "none",
+    );
+    const pastVisible = [...pastList.children].some(
+      (c) => (c as HTMLElement).style.display !== "none",
+    );
+    upcomingEmpty?.classList.toggle("hidden", upVisible);
+    pastEmpty?.classList.toggle("hidden", pastVisible);
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.setAttribute("aria-pressed", "false"));
+      tab.setAttribute("aria-pressed", "true");
+      applyType(tab.dataset.eventType || "");
+    });
+  });
+
+  // 3. Honour a ?type= query param (used by the header dropdown).
+  const params = new URLSearchParams(window.location.search);
+  const preset = params.get("type");
+  if (preset) {
+    const match = [...tabs].find((t) => t.dataset.eventType === preset);
+    if (match) match.click();
+  }
+</script>

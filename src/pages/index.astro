@@ -1,0 +1,208 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import EventCard from "../components/EventCard.astro";
+import NewsCard from "../components/NewsCard.astro";
+import SymposiumCard from "../components/SymposiumCard.astro";
+import PublicationEntry from "../components/PublicationEntry.astro";
+import { isUpcoming } from "../lib/utils";
+
+// Featured publications
+const allPubs = await getCollection("publications");
+const featuredPubs = allPubs.filter((p) => p.data.featured).slice(0, 3);
+
+// Upcoming events (next 3 by date)
+const allEvents = await getCollection("events");
+const upcomingEvents = allEvents
+  .filter((e) => isUpcoming(e.data.start_date))
+  .sort((a, b) => a.data.start_date.getTime() - b.data.start_date.getTime())
+  .slice(0, 3);
+
+// Latest news (3 most recent)
+const latestNews = (await getCollection("news"))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+// Symposia (2 most recent by year)
+const symposia = (await getCollection("symposia"))
+  .sort((a, b) => b.data.year - a.data.year)
+  .slice(0, 2);
+
+// Stats
+const people = await getCollection("people");
+const researcherCount = people.filter((p) => p.data.status === "current").length;
+const pubCount = allPubs.length;
+
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Stockholm Centre for the Ethics of War and Peace",
+  url: "https://stockholmcentre.org",
+  parentOrganization: {
+    "@type": "CollegeOrUniversity",
+    name: "Stockholm University",
+  },
+  sameAs: ["https://twitter.com/EthicsWarPeace"],
+};
+---
+
+<BaseLayout
+  title="Stockholm Centre for the Ethics of War and Peace"
+  rawTitle={true}
+  description="An interdisciplinary research centre at Stockholm University studying the moral, political, and legal questions raised by war and peace."
+  jsonLd={orgJsonLd}
+>
+  {/* 1. Hero */}
+  <section class="bg-primary text-white">
+    <div class="container-page py-24 md:py-30">
+      <p class="kicker text-secondary">
+        Department of Philosophy · Stockholm University
+      </p>
+      <h1 class="mt-4 max-w-4xl text-white md:text-6xl">
+        The ethics of war and peace
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
+        We are an interdisciplinary research centre dedicated to the rigorous
+        philosophical study of the moral, political, and legal questions raised
+        by armed conflict.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/research" class="btn btn-primary">Our Research</a>
+        <a href="/events" class="btn btn-outline">Upcoming Events</a>
+      </div>
+    </div>
+  </section>
+
+  {/* 2. About strip */}
+  <section class="container-page py-18">
+    <div class="grid gap-12 md:grid-cols-2">
+      <div>
+        <h2 class="text-3xl">About the Centre</h2>
+        <p class="mt-4 leading-relaxed text-text/80">
+          The Stockholm Centre for the Ethics of War and Peace brings together
+          philosophers working on self-defence, just war theory, the protection
+          of civilians, and the moral foundations of peace. Through research,
+          public engagement, and a programme of workshops and symposia, we aim
+          to advance understanding of one of humanity's most pressing ethical
+          challenges.
+        </p>
+        <a
+          href="/about"
+          class="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:underline"
+          >More about us →</a
+        >
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-lg border border-border bg-white p-5 text-center">
+          <p class="font-heading text-3xl font-bold text-primary">2012</p>
+          <p class="mt-1 text-xs uppercase tracking-wide text-muted">Founded</p>
+        </div>
+        <div class="rounded-lg border border-border bg-white p-5 text-center">
+          <p class="font-heading text-3xl font-bold text-primary">
+            {researcherCount}
+          </p>
+          <p class="mt-1 text-xs uppercase tracking-wide text-muted">
+            Researchers
+          </p>
+        </div>
+        <div class="rounded-lg border border-border bg-white p-5 text-center">
+          <p class="font-heading text-3xl font-bold text-primary">{pubCount}+</p>
+          <p class="mt-1 text-xs uppercase tracking-wide text-muted">
+            Publications
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 3. Featured Research */}
+  {
+    featuredPubs.length > 0 && (
+      <section class="bg-white/60">
+        <div class="container-page py-18">
+          <SectionHeader
+            title="Featured Research"
+            description="Selected recent publications from Centre members."
+            link="/research/publications"
+          />
+          <div class="rounded-lg border border-border bg-white px-6">
+            {featuredPubs.map((entry) => (
+              <PublicationEntry entry={entry} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* 4. Upcoming Events */}
+  {
+    upcomingEvents.length > 0 && (
+      <section class="container-page py-18">
+        <SectionHeader
+          title="Upcoming Events"
+          description="Talks, workshops, and our Conversations on War series."
+          link="/events"
+        />
+        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {upcomingEvents.map((entry) => (
+            <EventCard entry={entry} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {/* 5. Latest News */}
+  {
+    latestNews.length > 0 && (
+      <section class="bg-white/60">
+        <div class="container-page py-18">
+          <SectionHeader title="Latest News" link="/news" />
+          <div class="grid gap-5 md:grid-cols-3">
+            {latestNews.map((entry) => (
+              <NewsCard entry={entry} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {/* 6. Symposia highlight */}
+  {
+    symposia.length > 0 && (
+      <section class="container-page py-18">
+        <SectionHeader
+          title="Journal Symposia"
+          description="Collections of critical essays organised around a book or topic and published in leading philosophy journals."
+          link="/symposia"
+        />
+        <div class="grid gap-5 md:grid-cols-2">
+          {symposia.map((entry) => (
+            <SymposiumCard entry={entry} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {/* 7. Affiliation logos */}
+  <section class="border-t border-border bg-white/60">
+    <div
+      class="container-page flex flex-wrap items-center justify-center gap-10 py-12"
+    >
+      <div
+        class="flex h-14 w-52 items-center justify-center rounded border border-border text-sm text-muted"
+      >
+        Stockholm University
+      </div>
+      <div
+        class="flex h-14 w-64 items-center justify-center rounded border border-border text-sm text-muted"
+      >
+        Wallenberg Academy Fellows
+      </div>
+    </div>
+  </section>
+</BaseLayout>

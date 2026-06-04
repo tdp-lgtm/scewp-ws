@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+---
+
+<BaseLayout
+  title="About"
+  description="About the Stockholm Centre for the Ethics of War and Peace: our mission, history, and funding."
+>
+  <PageHero
+    title="About the Centre"
+    subtitle="Rigorous philosophy on the morality of armed conflict"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "About" }]}
+  />
+
+  <div class="container-page py-16">
+    <div class="prose-academic">
+      <p class="text-xl leading-relaxed text-text">
+        The Stockholm Centre for the Ethics of War and Peace is an
+        interdisciplinary research centre based in the Department of Philosophy
+        at Stockholm University. We are dedicated to the rigorous philosophical
+        study of the moral, political, and legal questions raised by war, armed
+        conflict, and the pursuit of peace.
+      </p>
+
+      <h2>Our mission</h2>
+      <p>
+        War confronts us with some of the hardest questions in ethics. When, if
+        ever, is it permissible to kill? Who may be targeted, and who must be
+        protected? What do victors owe to the vanquished, and what does a just
+        peace require? The Centre exists to address these questions with the
+        analytical rigour of contemporary moral and political philosophy, while
+        remaining engaged with the realities of conflict and the work of those
+        who study it across law, political science, and history.
+      </p>
+
+      <h2>History</h2>
+      <p>
+        Founded in 2012, the Centre has grown into one of the leading
+        international hubs for research on the ethics of war. It hosts
+        postdoctoral researchers and doctoral candidates, convenes regular
+        workshops and reading groups, and runs its flagship
+        <em>Conversations on War</em> series, which brings leading thinkers into
+        public dialogue. The Centre is also known for its journal symposia —
+        collections of critical essays organised around an important book or
+        topic and published in leading philosophy journals.
+      </p>
+
+      <h2>Funding</h2>
+      <p>
+        The Centre's research has been supported by a range of funders,
+        including the Knut and Alice Wallenberg Foundation through the Wallenberg
+        Academy Fellows programme, Riksbankens Jubileumsfond, and Stockholm
+        University. This support enables us to sustain a vibrant community of
+        researchers and an active programme of events and public engagement.
+      </p>
+
+      <h2>Join us</h2>
+      <p>
+        We welcome enquiries from prospective doctoral students, visiting
+        researchers, and collaborators. If you would like to learn more about
+        the Centre or explore working with us, please get in touch.
+      </p>
+    </div>
+
+    <div class="mt-12 rounded-lg border border-border bg-white p-8 text-center">
+      <h3 class="text-2xl">Get in touch</h3>
+      <p class="mt-2 text-muted">
+        Questions about our research, events, or collaboration?
+      </p>
+      <a href="/contact" class="btn btn-ghost mt-5">Contact the Centre</a>
+    </div>
+  </div>
+</BaseLayout>

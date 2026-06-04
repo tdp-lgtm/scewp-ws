@@ -1,0 +1,78 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import BackLink from "../../components/BackLink.astro";
+import { formatDate } from "../../lib/utils";
+
+export async function getStaticPaths() {
+  // External-link items don't get their own page.
+  const news = (await getCollection("news")).filter(
+    (n) => !n.data.external_url,
+  );
+  return news.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"news">;
+}
+
+const { entry } = Astro.props;
+const n = entry.data;
+const { Content } = await entry.render();
+
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: n.title,
+  datePublished: n.date.toISOString(),
+  description: n.summary,
+  publisher: {
+    "@type": "Organization",
+    name: "Stockholm Centre for the Ethics of War and Peace",
+  },
+};
+---
+
+<BaseLayout title={n.title} description={n.summary} jsonLd={articleJsonLd}>
+  <PageHero
+    title={n.title}
+    breadcrumb={[
+      { label: "Home", href: "/" },
+      { label: "News", href: "/news" },
+      { label: n.title },
+    ]}
+  />
+
+  <div class="container-page py-16">
+    <BackLink href="/news" label="Back to news" />
+
+    <article class="mt-8">
+      <div class="flex items-center gap-3 text-sm text-muted">
+        <span
+          class="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary"
+          >{n.category}</span
+        >
+        <time datetime={n.date.toISOString()}>{formatDate(n.date)}</time>
+      </div>
+
+      {
+        n.image && (
+          <img
+            src={n.image}
+            alt={n.title}
+            class="mt-6 w-full rounded-lg object-cover"
+          />
+        )
+      }
+
+      <div class="prose-academic mt-8">
+        <p class="text-xl text-text">{n.summary}</p>
+        <Content />
+      </div>
+    </article>
+  </div>
+</BaseLayout>

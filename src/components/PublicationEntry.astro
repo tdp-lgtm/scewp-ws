@@ -1,0 +1,88 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatAuthors } from "../lib/utils";
+import TagBadge from "./TagBadge.astro";
+import ExternalLinkIcon from "./ExternalLinkIcon.astro";
+
+interface Props {
+  entry: CollectionEntry<"publications">;
+}
+
+const { entry } = Astro.props;
+const p = entry.data;
+const hasDetail = Boolean(p.abstract || p.pdf_file);
+const doiUrl = p.doi ? `https://doi.org/${p.doi.replace(/^https?:\/\/doi\.org\//, "")}` : null;
+---
+
+<article
+  data-year={p.year}
+  data-type={p.publication_type}
+  data-tags={(p.tags || []).join(",")}
+  data-search={`${p.title} ${p.authors.join(" ")} ${(p.tags || []).join(" ")}`}
+  class="publication-entry border-b border-border py-5"
+>
+  <p class="text-sm leading-relaxed text-text">
+    <span>{formatAuthors(p.authors)}</span>
+    <span class="font-bold"> ({p.year}). </span>
+    {
+      hasDetail ? (
+        <a
+          href={`/research/publications/${entry.slug}`}
+          class="italic text-primary no-underline hover:text-accent"
+        >
+          {p.title}
+        </a>
+      ) : (
+        <span class="italic">{p.title}</span>
+      )
+    }
+    {p.journal_or_publisher && <span>. {p.journal_or_publisher}</span>}
+    {p.volume && <span>, {p.volume}</span>}
+    {p.pages && <span>, pp. {p.pages}</span>}
+    <span>.</span>
+  </p>
+
+  <div class="mt-2 flex flex-wrap items-center gap-2">
+    <TagBadge label={p.publication_type} variant="navy" />
+    {(p.tags || []).map((t) => <TagBadge label={t} variant="default" />)}
+  </div>
+
+  <div class="mt-2 flex flex-wrap items-center gap-4 text-sm">
+    {
+      doiUrl && (
+        <a
+          href={doiUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 text-accent no-underline hover:underline"
+        >
+          DOI <ExternalLinkIcon />
+        </a>
+      )
+    }
+    {
+      p.open_access_url && (
+        <a
+          href={p.open_access_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 text-accent no-underline hover:underline"
+        >
+          Open Access <ExternalLinkIcon />
+        </a>
+      )
+    }
+    {
+      p.pdf_file && (
+        <a
+          href={p.pdf_file}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 text-accent no-underline hover:underline"
+        >
+          PDF
+        </a>
+      )
+    }
+  </div>
+</article>

@@ -1,0 +1,59 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string; // e.g. "/news" — page 1 is baseUrl, page N is baseUrl/page/N
+}
+
+const { currentPage, totalPages, baseUrl } = Astro.props;
+
+const pageHref = (n: number) =>
+  n === 1 ? `${baseUrl}` : `${baseUrl}/page/${n}`;
+
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{
+  totalPages > 1 && (
+    <nav aria-label="Pagination" class="mt-12 flex items-center justify-center gap-1">
+      <a
+        href={currentPage > 1 ? pageHref(currentPage - 1) : undefined}
+        class:list={[
+          "rounded-md border border-border px-3 py-2 text-sm no-underline",
+          currentPage > 1
+            ? "text-primary hover:border-primary"
+            : "pointer-events-none text-muted opacity-40",
+        ]}
+        aria-disabled={currentPage === 1}
+      >
+        ← Prev
+      </a>
+      {pages.map((n) => (
+        <a
+          href={pageHref(n)}
+          aria-current={n === currentPage ? "page" : undefined}
+          class:list={[
+            "rounded-md border px-3.5 py-2 text-sm no-underline",
+            n === currentPage
+              ? "border-primary bg-primary text-white"
+              : "border-border text-primary hover:border-primary",
+          ]}
+        >
+          {n}
+        </a>
+      ))}
+      <a
+        href={currentPage < totalPages ? pageHref(currentPage + 1) : undefined}
+        class:list={[
+          "rounded-md border border-border px-3 py-2 text-sm no-underline",
+          currentPage < totalPages
+            ? "text-primary hover:border-primary"
+            : "pointer-events-none text-muted opacity-40",
+        ]}
+        aria-disabled={currentPage === totalPages}
+      >
+        Next →
+      </a>
+    </nav>
+  )
+}

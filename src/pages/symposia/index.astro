@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SymposiumCard from "../../components/SymposiumCard.astro";
+
+const symposia = (await getCollection("symposia")).sort((a, b) => {
+  if (a.data.display_order !== b.data.display_order) {
+    return a.data.display_order - b.data.display_order;
+  }
+  return b.data.year - a.data.year;
+});
+---
+
+<BaseLayout
+  title="Journal Symposia"
+  description="Journal symposia organised by the Stockholm Centre for the Ethics of War and Peace — collections of critical essays in leading philosophy journals."
+>
+  <PageHero
+    title="Journal Symposia"
+    subtitle="Critical essays organised around a book or topic"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "Symposia" }]}
+  />
+
+  <div class="container-page py-16">
+    <div class="prose-academic">
+      <p class="text-lg">
+        A journal symposium is a distinctive scholarly format: a collection of
+        critical essays organised around an important book or topic and published
+        together in a leading philosophy journal. The Centre has a particular
+        reputation for convening these symposia, which bring multiple
+        perspectives into sustained dialogue and often include a reply from the
+        author under discussion.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
+      {symposia.map((entry) => <SymposiumCard entry={entry} />)}
+    </div>
+  </div>
+</BaseLayout>

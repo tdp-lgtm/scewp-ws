@@ -1,0 +1,100 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import BackLink from "../../components/BackLink.astro";
+import ExternalLinkIcon from "../../components/ExternalLinkIcon.astro";
+
+export async function getStaticPaths() {
+  const symposia = await getCollection("symposia");
+  return symposia.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"symposia">;
+}
+
+const { entry } = Astro.props;
+const s = entry.data;
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={s.title} description={s.subject_description}>
+  <PageHero
+    title={s.title}
+    subtitle={`${s.journal} · ${s.year}`}
+    breadcrumb={[
+      { label: "Home", href: "/" },
+      { label: "Symposia", href: "/symposia" },
+      { label: s.title },
+    ]}
+  />
+
+  <div class="container-page py-16">
+    <BackLink href="/symposia" label="Back to symposia" />
+
+    <div class="mt-8 grid gap-12 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <p class="text-lg text-text/85">{s.subject_description}</p>
+
+        {
+          s.book_title && (
+            <p class="mt-4 text-muted">
+              Discussing <span class="italic">{s.book_title}</span>
+              {s.book_author && <span> by {s.book_author}</span>}.
+            </p>
+          )
+        }
+
+        <div class="prose-academic mt-6">
+          <Content />
+        </div>
+
+        {
+          s.journal_url && (
+            <a
+              href={s.journal_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-ghost mt-8 inline-flex items-center gap-2"
+            >
+              Read in {s.journal} <ExternalLinkIcon class="h-4 w-4" />
+            </a>
+          )
+        }
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div class="rounded-lg border border-border bg-white p-6 text-sm">
+          <dl class="space-y-4">
+            <div>
+              <dt class="font-semibold text-primary">Journal</dt>
+              <dd class="text-muted">{s.journal}</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-primary">Year</dt>
+              <dd class="text-muted">{s.year}</dd>
+            </div>
+            {
+              s.contributors && s.contributors.length > 0 && (
+                <div>
+                  <dt class="font-semibold text-primary">Contributors</dt>
+                  <dd class="text-muted">
+                    <ul class="mt-1 space-y-1">
+                      {s.contributors.map((c) => (
+                        <li>{c}</li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              )
+            }
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

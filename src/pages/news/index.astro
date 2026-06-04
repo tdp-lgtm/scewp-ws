@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import NewsCard from "../../components/NewsCard.astro";
+import Pagination from "../../components/Pagination.astro";
+
+const PER_PAGE = 10;
+const all = (await getCollection("news")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const totalPages = Math.max(1, Math.ceil(all.length / PER_PAGE));
+const items = all.slice(0, PER_PAGE);
+---
+
+<BaseLayout
+  title="News"
+  description="News and announcements from the Stockholm Centre for the Ethics of War and Peace."
+>
+  <PageHero
+    title="News"
+    subtitle="Announcements, press, and updates"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "News" }]}
+  />
+
+  <div class="container-page py-16">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {items.map((entry) => <NewsCard entry={entry} />)}
+    </div>
+    <Pagination currentPage={1} totalPages={totalPages} baseUrl="/news" />
+  </div>
+</BaseLayout>

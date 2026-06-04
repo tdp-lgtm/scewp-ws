@@ -1,0 +1,59 @@
+---
+const SITE_NAME = "Stockholm Centre for the Ethics of War and Peace";
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  /** When true, the title is used as-is (e.g. homepage), otherwise suffixed. */
+  rawTitle?: boolean;
+  /** Optional JSON-LD structured data object(s). */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = "An interdisciplinary research centre at Stockholm University studying the moral, political, and legal questions raised by war and peace.",
+  ogImage = "/og-default.svg",
+  rawTitle = false,
+  jsonLd,
+} = Astro.props;
+
+const fullTitle = rawTitle ? title : `${title} | ${SITE_NAME}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage, Astro.site).href;
+const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{/* Open Graph */}
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
+
+{/* Twitter */}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@EthicsWarPeace" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
+
+{/* Fonts: preconnect for performance */}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+{
+  ldArray.map((ld) => (
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(ld)}
+    />
+  ))
+}

@@ -1,0 +1,80 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHeader from "../../components/SectionHeader.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+
+const currentProjects = (await getCollection("projects"))
+  .filter((p) => p.data.status === "current")
+  .sort((a, b) => b.data.start_year - a.data.start_year);
+---
+
+<BaseLayout
+  title="Research"
+  description="Research at the Stockholm Centre for the Ethics of War and Peace: projects and publications."
+>
+  <PageHero
+    title="Research"
+    subtitle="Projects and publications"
+    breadcrumb={[{ label: "Home", href: "/" }, { label: "Research" }]}
+  />
+
+  <div class="container-page py-16">
+    <p class="prose-academic text-lg">
+      The Centre's research spans the full range of moral questions raised by war
+      and peace — from the ethics of individual self-defence to the obligations of
+      states in war and its aftermath. Our work is organised around funded
+      research projects and published in books, journals, and our journal
+      symposia.
+    </p>
+
+    {/* Subsection links */}
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
+      <a
+        href="/research/projects"
+        class="group rounded-lg border border-border bg-white p-8 no-underline shadow-card transition-shadow hover:shadow-card-hover"
+      >
+        <h2 class="text-2xl group-hover:text-accent">Research Projects</h2>
+        <p class="mt-2 text-muted">
+          Current and completed projects, including funded programmes and
+          collaborations.
+        </p>
+        <span class="mt-4 inline-block text-sm font-semibold text-accent"
+          >Browse projects →</span
+        >
+      </a>
+      <a
+        href="/research/publications"
+        class="group rounded-lg border border-border bg-white p-8 no-underline shadow-card transition-shadow hover:shadow-card-hover"
+      >
+        <h2 class="text-2xl group-hover:text-accent">Publications</h2>
+        <p class="mt-2 text-muted">
+          Books, journal articles, chapters, and working papers by Centre
+          members, filterable by year, type, and topic.
+        </p>
+        <span class="mt-4 inline-block text-sm font-semibold text-accent"
+          >Browse publications →</span
+        >
+      </a>
+    </div>
+
+    {/* Current projects grid */}
+    {
+      currentProjects.length > 0 && (
+        <div class="mt-16">
+          <SectionHeader
+            title="Current Projects"
+            link="/research/projects"
+            linkLabel="All projects"
+          />
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {currentProjects.map((entry) => (
+              <ProjectCard entry={entry} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>
