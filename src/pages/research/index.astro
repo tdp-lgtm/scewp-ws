@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
 import SectionHeader from "../../components/SectionHeader.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
+import { withBase } from "../../lib/utils";
 
 const currentProjects = (await getCollection("projects"))
   .filter((p) => p.data.status === "current")
@@ -32,7 +33,7 @@ const currentProjects = (await getCollection("projects"))
     {/* Subsection links */}
     <div class="mt-10 grid gap-6 md:grid-cols-2">
       <a
-        href="/research/projects"
+        href={withBase("/research/projects")}
         class="group rounded-lg border border-border bg-white p-8 no-underline shadow-card transition-shadow hover:shadow-card-hover"
       >
         <h2 class="text-2xl group-hover:text-accent">Research Projects</h2>
@@ -45,7 +46,7 @@ const currentProjects = (await getCollection("projects"))
         >
       </a>
       <a
-        href="/research/publications"
+        href={withBase("/research/publications")}
         class="group rounded-lg border border-border bg-white p-8 no-underline shadow-card transition-shadow hover:shadow-card-hover"
       >
         <h2 class="text-2xl group-hover:text-accent">Publications</h2>

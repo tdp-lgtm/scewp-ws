@@ -6,7 +6,7 @@ import BackLink from "../../components/BackLink.astro";
 import TagBadge from "../../components/TagBadge.astro";
 import PublicationEntry from "../../components/PublicationEntry.astro";
 import ExternalLinkIcon from "../../components/ExternalLinkIcon.astro";
-import { nameMatchesAuthor } from "../../lib/utils";
+import { nameMatchesAuthor, withBase } from "../../lib/utils";
 
 export async function getStaticPaths() {
   const people = await getCollection("people");
@@ -50,7 +50,7 @@ const theirPubs = allPubs
         {
           p.photo ? (
             <img
-              src={p.photo}
+              src={withBase(p.photo)}
               alt={`Portrait of ${p.name}`}
               class="w-full max-w-xs rounded-lg object-cover"
             />

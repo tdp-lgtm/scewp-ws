@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import ExternalLinkIcon from "../components/ExternalLinkIcon.astro";
+import { withBase } from "../lib/utils";
 ---
 
 <BaseLayout
@@ -29,7 +30,7 @@ import ExternalLinkIcon from "../components/ExternalLinkIcon.astro";
         together for accessible discussions of pressing ethical questions raised
         by contemporary conflict. Events are free and open to all, both in person
         and online. See our
-        <a href="/events">events page</a> for upcoming and past sessions.
+        <a href={withBase("/events")}>events page</a> for upcoming and past sessions.
       </p>
 
       <h2>Writing for a wider audience</h2>

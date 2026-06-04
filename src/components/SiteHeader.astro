@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../lib/utils";
+
 const nav = [
   { label: "About", href: "/about" },
   { label: "People", href: "/people" },
@@ -46,7 +48,7 @@ const nav = [
     class="border-b border-border bg-surface/95 backdrop-blur transition-all"
   >
     <div class="container-page flex items-center justify-between gap-4 py-4">
-      <a href="/" class="group flex flex-col leading-tight no-underline">
+      <a href={withBase("/")} class="group flex flex-col leading-tight no-underline">
         <span class="font-heading text-lg font-bold text-primary md:text-xl"
           >Stockholm Centre</span
         >
@@ -62,7 +64,7 @@ const nav = [
             nav.map((item) => (
               <li class="group relative">
                 <a
-                  href={item.href}
+                  href={withBase(item.href)}
                   class="inline-flex items-center gap-1 rounded px-3 py-2 text-sm font-medium text-text no-underline hover:text-accent"
                 >
                   {item.label}
@@ -86,7 +88,7 @@ const nav = [
                     {item.children.map((child) => (
                       <li>
                         <a
-                          href={child.href}
+                          href={withBase(child.href)}
                           class="block rounded px-3 py-2 text-sm text-text no-underline hover:bg-surface hover:text-accent"
                         >
                           {child.label}
@@ -130,7 +132,7 @@ const nav = [
           nav.map((item) => (
             <li class="border-b border-border/60 last:border-0">
               <a
-                href={item.href}
+                href={withBase(item.href)}
                 class="block py-3 text-base font-medium text-text no-underline"
               >
                 {item.label}
@@ -140,7 +142,7 @@ const nav = [
                   {item.children.map((child) => (
                     <li>
                       <a
-                        href={child.href}
+                        href={withBase(child.href)}
                         class="block py-2 text-sm text-muted no-underline"
                       >
                         {child.label}

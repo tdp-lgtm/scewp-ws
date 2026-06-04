@@ -97,6 +97,24 @@ The Markdown **body** of each file is the long-form content (rendered via
 4. Deploy. Your site will build and go live on a `*.netlify.app` URL; point the
    `stockholmcentre.org` domain at it under **Domain settings**.
 
+## Deployment (GitHub Pages)
+
+A GitHub Actions workflow (`.github/workflows/deploy.yml`) builds and deploys the
+site to GitHub Pages on every push to `main`. Because a project Pages site is
+served from a subpath (`https://<owner>.github.io/<repo>/`), the build sets a
+base path automatically: `astro.config.mjs` reads `GITHUB_PAGES=true` (set by the
+workflow) and configures `site` + `base` accordingly. Local dev and Netlify
+builds are unaffected and continue to serve from the root.
+
+**One-time setup:** in the repo, go to **Settings → Pages → Build and deployment
+→ Source** and select **GitHub Actions**. After the next push to `main`, the site
+will be live at **https://tdp-lgtm.github.io/scewp-ws/**.
+
+> The Decap CMS at `/admin` relies on Netlify Identity + Git Gateway, so the CMS
+> **editor will not function on GitHub Pages** (the public site works fully).
+> Use Netlify, or a GitHub OAuth proxy with the Decap `github` backend, for CMS
+> editing. GitHub Pages is ideal for previewing/testing the site itself.
+
 ## Enabling the CMS (Netlify Identity + Git Gateway)
 
 The CMS at `/admin` uses Netlify **Identity** for login and **Git Gateway** to

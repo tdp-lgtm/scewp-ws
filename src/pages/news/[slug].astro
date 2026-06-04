@@ -3,7 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
 import BackLink from "../../components/BackLink.astro";
-import { formatDate } from "../../lib/utils";
+import { formatDate, withBase } from "../../lib/utils";
 
 export async function getStaticPaths() {
   // External-link items don't get their own page.
@@ -62,7 +62,7 @@ const articleJsonLd = {
       {
         n.image && (
           <img
-            src={n.image}
+            src={withBase(n.image)}
             alt={n.title}
             class="mt-6 w-full rounded-lg object-cover"
           />

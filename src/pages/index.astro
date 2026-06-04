@@ -6,7 +6,7 @@ import EventCard from "../components/EventCard.astro";
 import NewsCard from "../components/NewsCard.astro";
 import SymposiumCard from "../components/SymposiumCard.astro";
 import PublicationEntry from "../components/PublicationEntry.astro";
-import { isUpcoming } from "../lib/utils";
+import { isUpcoming, withBase } from "../lib/utils";
 
 // Featured publications
 const allPubs = await getCollection("publications");
@@ -68,8 +68,8 @@ const orgJsonLd = {
         by armed conflict.
       </p>
       <div class="mt-8 flex flex-wrap gap-4">
-        <a href="/research" class="btn btn-primary">Our Research</a>
-        <a href="/events" class="btn btn-outline">Upcoming Events</a>
+        <a href={withBase("/research")} class="btn btn-primary">Our Research</a>
+        <a href={withBase("/events")} class="btn btn-outline">Upcoming Events</a>
       </div>
     </div>
   </section>
@@ -88,7 +88,7 @@ const orgJsonLd = {
           challenges.
         </p>
         <a
-          href="/about"
+          href={withBase("/about")}
           class="mt-4 inline-block text-sm font-semibold text-accent no-underline hover:underline"
           >More about us →</a
         >

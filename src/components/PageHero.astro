@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../lib/utils";
+
 interface Crumb {
   label: string;
   href?: string;
@@ -23,7 +25,7 @@ const { title, subtitle, breadcrumb } = Astro.props;
               <li class="flex items-center gap-2">
                 {crumb.href ? (
                   <a
-                    href={crumb.href}
+                    href={withBase(crumb.href)}
                     class="text-white/70 no-underline hover:text-secondary"
                   >
                     {crumb.label}

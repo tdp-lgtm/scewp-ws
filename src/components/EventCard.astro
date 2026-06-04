@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { dateParts } from "../lib/utils";
+import { dateParts, withBase } from "../lib/utils";
 
 interface Props {
   entry: CollectionEntry<"events">;
@@ -62,7 +62,7 @@ const typeColours: Record<string, string> = {
     </div>
 
     <h3 class="mt-2 text-lg leading-snug">
-      <a href={`/events/${entry.slug}`} class="no-underline hover:text-accent"
+      <a href={withBase(`/events/${entry.slug}`)} class="no-underline hover:text-accent"
         >{e.title}</a
       >
     </h3>
@@ -92,7 +92,7 @@ const typeColours: Record<string, string> = {
           </a>
         ) : (
           <a
-            href={`/events/${entry.slug}`}
+            href={withBase(`/events/${entry.slug}`)}
             class="font-semibold text-accent no-underline hover:underline"
           >
             Learn more →

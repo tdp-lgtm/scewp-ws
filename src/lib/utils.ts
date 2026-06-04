@@ -1,5 +1,16 @@
 /** Shared formatting and helper utilities. */
 
+/**
+ * Prefix an absolute, site-internal path with the configured base path
+ * (e.g. "/scewp-ws" on GitHub Pages, "" at the root). External URLs, anchors,
+ * and `mailto:` links are returned unchanged.
+ */
+export function withBase(path: string): string {
+  if (!path.startsWith("/")) return path; // external, anchor, mailto, etc.
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+  return `${base}${path}`;
+}
+
 /** Format a Date as e.g. "15 September 2026". */
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-GB", {

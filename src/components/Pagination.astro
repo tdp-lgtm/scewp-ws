@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../lib/utils";
+
 interface Props {
   currentPage: number;
   totalPages: number;
@@ -8,7 +10,7 @@ interface Props {
 const { currentPage, totalPages, baseUrl } = Astro.props;
 
 const pageHref = (n: number) =>
-  n === 1 ? `${baseUrl}` : `${baseUrl}/page/${n}`;
+  withBase(n === 1 ? `${baseUrl}` : `${baseUrl}/page/${n}`);
 
 const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 ---

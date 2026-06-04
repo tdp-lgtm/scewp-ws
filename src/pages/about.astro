@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
+import { withBase } from "../lib/utils";
 ---
 
 <BaseLayout
@@ -68,7 +69,7 @@ import PageHero from "../components/PageHero.astro";
       <p class="mt-2 text-muted">
         Questions about our research, events, or collaboration?
       </p>
-      <a href="/contact" class="btn btn-ghost mt-5">Contact the Centre</a>
+      <a href={withBase("/contact")} class="btn btn-ghost mt-5">Contact the Centre</a>
     </div>
   </div>
 </BaseLayout>

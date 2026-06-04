@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatAuthors } from "../lib/utils";
+import { formatAuthors, withBase } from "../lib/utils";
 import TagBadge from "./TagBadge.astro";
 import ExternalLinkIcon from "./ExternalLinkIcon.astro";
 
@@ -27,7 +27,7 @@ const doiUrl = p.doi ? `https://doi.org/${p.doi.replace(/^https?:\/\/doi\.org\//
     {
       hasDetail ? (
         <a
-          href={`/research/publications/${entry.slug}`}
+          href={withBase(`/research/publications/${entry.slug}`)}
           class="italic text-primary no-underline hover:text-accent"
         >
           {p.title}
@@ -75,7 +75,7 @@ const doiUrl = p.doi ? `https://doi.org/${p.doi.replace(/^https?:\/\/doi\.org\//
     {
       p.pdf_file && (
         <a
-          href={p.pdf_file}
+          href={withBase(p.pdf_file)}
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1 text-accent no-underline hover:underline"

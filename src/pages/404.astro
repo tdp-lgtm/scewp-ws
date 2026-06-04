@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/utils";
 ---
 
 <BaseLayout title="Page not found" description="The page you were looking for could not be found.">
@@ -11,8 +12,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       you back on track.
     </p>
     <div class="mt-8 flex flex-wrap justify-center gap-4">
-      <a href="/" class="btn btn-ghost">Back to home</a>
-      <a href="/research" class="btn btn-ghost">Our research</a>
+      <a href={withBase("/")} class="btn btn-ghost">Back to home</a>
+      <a href={withBase("/research")} class="btn btn-ghost">Our research</a>
     </div>
   </section>
 </BaseLayout>

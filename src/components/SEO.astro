@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../lib/utils";
+
 const SITE_NAME = "Stockholm Centre for the Ethics of War and Peace";
 
 interface Props {
@@ -21,7 +23,7 @@ const {
 
 const fullTitle = rawTitle ? title : `${title} | ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImageUrl = new URL(ogImage, Astro.site).href;
+const ogImageUrl = new URL(withBase(ogImage), Astro.site).href;
 const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 

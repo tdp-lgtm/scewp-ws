@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { formatDate, excerpt } from "../lib/utils";
+import { formatDate, excerpt, withBase } from "../lib/utils";
 import ExternalLinkIcon from "./ExternalLinkIcon.astro";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 const { entry } = Astro.props;
 const n = entry.data;
 const isExternal = Boolean(n.external_url);
-const href = isExternal ? n.external_url! : `/news/${entry.slug}`;
+const href = isExternal ? n.external_url! : withBase(`/news/${entry.slug}`);
 
 const categoryColours: Record<string, string> = {
   News: "bg-primary/10 text-primary",

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import ExternalLinkIcon from "./ExternalLinkIcon.astro";
+import { withBase } from "../lib/utils";
 
 interface Props {
   entry: CollectionEntry<"symposia">;
@@ -16,7 +17,7 @@ const s = entry.data;
   <p class="kicker">{s.journal} · {s.year}</p>
 
   <h3 class="mt-2 text-xl leading-snug">
-    <a href={`/symposia/${entry.slug}`} class="no-underline hover:text-accent"
+    <a href={withBase(`/symposia/${entry.slug}`)} class="no-underline hover:text-accent"
       >{s.title}</a
     >
   </h3>
@@ -45,7 +46,7 @@ const s = entry.data;
 
   <div class="mt-4 flex flex-wrap gap-4 text-sm">
     <a
-      href={`/symposia/${entry.slug}`}
+      href={withBase(`/symposia/${entry.slug}`)}
       class="font-semibold text-accent no-underline hover:underline"
       >Details →</a
     >
