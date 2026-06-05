@@ -14,6 +14,7 @@ interface Props {
 }
 
 const { title, description, ogImage, rawTitle, jsonLd } = Astro.props;
+const adminUrl = withBase("/admin/");
 ---
 
 <!doctype html>
@@ -30,6 +31,26 @@ const { title, description, ogImage, rawTitle, jsonLd } = Astro.props;
       rawTitle={rawTitle}
       jsonLd={jsonLd}
     />
+    {/*
+      Netlify Identity widget — handles invite/recovery tokens that land on the
+      site root (e.g. #invite_token=…) by opening the "set password" dialog, and
+      redirects to the CMS after login. Dormant when no Identity instance exists
+      (e.g. on GitHub Pages), so it is harmless there.
+    */}
+    <script
+      is:inline
+      src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script is:inline define:vars={{ adminUrl }}>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", (user) => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = adminUrl;
+            });
+          }
+        });
+      }
+    </script>
   </head>
   <body class="flex min-h-screen flex-col">
     <a href="#main" class="skip-link">Skip to content</a>
