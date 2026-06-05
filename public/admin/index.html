@@ -5,9 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>Content Manager · Stockholm Centre</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      ── SCEWP brand reskin for Decap CMS ──────────────────────────────────────
+      These rules override Decap's internal (Emotion) class names, matched via
+      [class*="…"] attribute selectors. They are unofficial: a future Decap
+      release could rename a component and require a small touch-up here. They
+      only affect the editing UI — not authentication.
+    -->
+    <style>
+      :root {
+        --scewp-navy: #1a2744;
+        --scewp-gold: #c9a84c;
+        --scewp-accent: #8b1a1a;
+        --scewp-surface: #f7f5f0;
+        --scewp-border: #ddd8cc;
+        --scewp-text: #1c1c1c;
+        --scewp-muted: #6b6b6b;
+      }
+
+      /* App background + base font */
+      body,
+      [class*="AppContainer"],
+      [class*="EditorContainer"] {
+        background-color: var(--scewp-surface) !important;
+        font-family: "Inter", system-ui, sans-serif !important;
+      }
+
+      /* Top navigation bar → deep navy */
+      [class*="AppHeader"] {
+        background-color: var(--scewp-navy) !important;
+        background-image: none !important;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15) !important;
+      }
+      [class*="AppHeader"] a,
+      [class*="AppHeaderButton"],
+      [class*="AppHeader"] [class*="AppHeaderNavLink"] {
+        color: rgba(255, 255, 255, 0.85) !important;
+      }
+      [class*="AppHeaderActions"] [class*="AppHeaderButton"]:hover,
+      [class*="AppHeader"] a:hover {
+        color: var(--scewp-gold) !important;
+      }
+
+      /* Headings use the editorial serif */
+      [class*="CollectionTop"] h1,
+      [class*="CollectionTopHeading"],
+      h1[class*="CardHeading"],
+      [class*="EditorControl"] h1 {
+        font-family: "Playfair Display", Georgia, serif !important;
+        color: var(--scewp-navy) !important;
+      }
+
+      /* Primary actions (Save / Publish) → gold with navy text */
+      [class*="PublishButton"],
+      [class*="SaveButton"],
+      [class*="ToolbarButton"][class*="Primary"],
+      button[class*="-PublishedToolbarButton"] {
+        background-color: var(--scewp-gold) !important;
+        color: var(--scewp-navy) !important;
+        font-weight: 600 !important;
+      }
+      [class*="PublishButton"]:hover,
+      [class*="SaveButton"]:hover {
+        filter: brightness(0.95);
+      }
+
+      /* "New …" create button on collection pages */
+      a[class*="-CollectionTop"] [class*="Button"],
+      [class*="CollectionTop"] a[class*="Button"] {
+        background-color: var(--scewp-navy) !important;
+        color: #fff !important;
+      }
+
+      /* Sidebar / collection nav active state */
+      [class*="SidebarNavLink"][class*="active"],
+      [class*="NavLink"][aria-current="page"] {
+        color: var(--scewp-accent) !important;
+        border-left-color: var(--scewp-gold) !important;
+      }
+
+      /* Cards + inputs: warm borders */
+      [class*="Card"],
+      [class*="control-input"],
+      input,
+      textarea {
+        border-color: var(--scewp-border) !important;
+      }
+      input:focus,
+      textarea:focus {
+        border-color: var(--scewp-navy) !important;
+      }
+
+      /* Links + accents throughout */
+      a {
+        color: var(--scewp-accent);
+      }
+
+      /* Login screen logo sizing */
+      [class*="PageContent"] img,
+      [class*="Login"] img {
+        max-width: 280px !important;
+        height: auto !important;
+      }
+    </style>
   </head>
   <body>
     <!-- Decap CMS — loaded from CDN (no bundling) -->
     <script src="https://unpkg.com/decap-cms@^3.5.0/dist/decap-cms.js"></script>
+
+    <!--
+      Style the live PREVIEW pane so editing looks like the real site:
+      Playfair headings, Inter body, brand colours and comfortable measure.
+    -->
+    <script>
+      (function registerPreviewStyles() {
+        var cms = window.CMS || window.DecapCms;
+        if (!cms || typeof cms.registerPreviewStyle !== "function") return;
+        cms.registerPreviewStyle(
+          "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700;900&display=swap",
+        );
+        cms.registerPreviewStyle(
+          [
+            'body { font-family: "Inter", system-ui, sans-serif; color: #1c1c1c; line-height: 1.7; padding: 1rem 1.25rem; background: #f7f5f0; }',
+            'h1, h2, h3, h4 { font-family: "Playfair Display", Georgia, serif; color: #1a2744; line-height: 1.2; }',
+            "h1 { font-size: 2rem; margin: 0 0 .5rem; }",
+            "h2 { font-size: 1.5rem; margin: 1.5rem 0 .5rem; }",
+            "h3 { font-size: 1.25rem; margin: 1.25rem 0 .5rem; }",
+            "p { max-width: 70ch; margin: 0 0 1rem; }",
+            "a { color: #8b1a1a; text-decoration: underline; text-underline-offset: 3px; }",
+            "blockquote { border-left: 4px solid #c9a84c; margin: 1.25rem 0; padding-left: 1rem; color: #6b6b6b; font-style: italic; }",
+            "img { max-width: 100%; height: auto; border-radius: 6px; }",
+            "hr { border: 0; border-top: 1px solid #ddd8cc; margin: 2rem 0; }",
+            "code { background: #ece8df; padding: .1em .35em; border-radius: 4px; }",
+          ].join("\n"),
+          { raw: true },
+        );
+      })();
+    </script>
   </body>
 </html>

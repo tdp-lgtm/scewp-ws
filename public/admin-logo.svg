@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="96" viewBox="0 0 320 96" role="img" aria-label="Stockholm Centre for the Ethics of War and Peace">
+  <rect x="0" y="0" width="320" height="96" fill="none"/>
+  <rect x="0" y="0" width="44" height="96" rx="4" fill="#1a2744"/>
+  <rect x="14" y="20" width="16" height="4" rx="2" fill="#c9a84c"/>
+  <rect x="14" y="46" width="16" height="4" rx="2" fill="#c9a84c"/>
+  <rect x="14" y="72" width="16" height="4" rx="2" fill="#c9a84c"/>
+  <text x="60" y="40" font-family="Georgia, 'Playfair Display', serif" font-size="24" font-weight="700" fill="#1a2744">Stockholm Centre</text>
+  <text x="60" y="66" font-family="Georgia, 'Playfair Display', serif" font-size="15" font-weight="400" fill="#6b6b6b">Ethics of War &amp; Peace</text>
+</svg>

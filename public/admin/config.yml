@@ -10,7 +10,7 @@ public_folder: "/uploads"
 
 site_url: https://stockholmcentre.org
 display_url: https://stockholmcentre.org
-logo_url: https://stockholmcentre.org/favicon.svg
+logo_url: /admin-logo.svg
 
 collections:
   # ─────────────────────────────────────────────
